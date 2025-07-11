@@ -49,6 +49,13 @@ class BloqueadorRequisicoes(QWebEngineUrlRequestInterceptor):
 
 def icone_default(nome):
     style = QApplication.style()
+    
+    
+    
+    
+    
+    
+    
     return {
         "voltar": style.standardIcon(QStyle.SP_ArrowBack),
         "avancar": style.standardIcon(QStyle.SP_ArrowForward),
@@ -73,7 +80,7 @@ class BrowserAba(QWidget):
 class LuKeBrowser(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("LuKe Browser - Alfa7")
+        self.setWindowTitle("LuKe Browser")
         self.setGeometry(100, 100, 1200, 800)
 
         self.bloqueio_ativo = True
@@ -103,8 +110,38 @@ class LuKeBrowser(QMainWindow):
 
     def _criar_toolbar(self):
         toolbar = QToolBar("Navegação")
-        toolbar.setIconSize(QSize(32, 32))
+        toolbar.setIconSize(QSize(36, 36))
         self.addToolBar(toolbar)
+        
+        
+        # Aplicar estilo aos botões da toolbar
+        toolbar.setStyleSheet("""
+            QToolButton {
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                padding: 4px;
+                background-color: #f5f5f5;
+            }
+            QToolButton:hover {
+                background-color: #e0e0e0;
+            }
+            QToolButton:pressed {
+                background-color: #d0d0d0;
+            }
+            QToolTip {
+                font-size: 12px;
+                color: #fff;
+                background-color: #333;
+                border: 1px solid #666;
+                padding: 4px;
+            }
+        """)
+        
+        
+        
+        
+        
+        
 
         btn_voltar = QAction(icone_default("voltar"), "Voltar", self)
         btn_voltar.triggered.connect(lambda: self.tab_atual().web_view.back())
@@ -145,9 +182,19 @@ class LuKeBrowser(QMainWindow):
         self.acao_bloqueio = QAction("Bloquear anúncios e rastreadores", self, checkable=True, checked=True)
         self.acao_bloqueio.triggered.connect(self.alternar_bloqueio)
         ferramentas.addAction(self.acao_bloqueio)
+        
+        
+        self.acao_privado = QAction("Ativar Privado", self, checkable=True, checked=True)
+        self.acao_privado.triggered.connect(self.alternar_privado)
+        ferramentas.addAction(self.acao_privado)
+        
+        
+        
+        
 
-        ferramentas.addAction("Ativar modo privado", self.ativar_modo_privado)
-        ferramentas.addAction("Desativar modo privado", self.desativar_modo_privado)
+        #ferramentas.addAction("Ativar modo privado", self.ativar_modo_privado)
+        #ferramentas.addAction("Desativar modo privado", self.desativar_modo_privado)
+        
         ferramentas.addAction("Definir página inicial", self.definir_pagina_inicial)
         ferramentas.addAction("Configurações", self.abrir_configuracoes)
 
@@ -163,6 +210,14 @@ class LuKeBrowser(QMainWindow):
         self.bloqueador.ativado = self.bloqueio_ativo
         msg = "Bloqueio ativado." if self.bloqueio_ativo else "Bloqueio desativado."
         QMessageBox.information(self, "Bloqueio de anúncios", msg)
+        
+        
+    def alternar_privado(self):
+        self.modo_privado = self.acao_privado.isChecked()
+        msg = "Privado ativado." if self.modo_privado else "Privado desativado."
+        QMessageBox.information(self, "Privado ON/OFF", msg)
+       
+
 
     def tab_atual(self):
         return self.tabs.currentWidget()
@@ -211,13 +266,13 @@ class LuKeBrowser(QMainWindow):
     def mostrar_sobre(self):
         QMessageBox.information(self, "Sobre", "LuKe Browser Alfa7 - com bloqueio e menu de configurações.")
 
-    def ativar_modo_privado(self):
-        self.modo_privado = True
-        QMessageBox.information(self, "Modo Privado", "Modo privado ativado.")
+    #def ativar_modo_privado(self):
+    #    self.modo_privado = True
+    #    QMessageBox.information(self, "Modo Privado", "Modo privado ativado.")
 
-    def desativar_modo_privado(self):
-        self.modo_privado = False
-        QMessageBox.information(self, "Modo Privado", "Modo privado desativado.")
+    #def desativar_modo_privado(self):
+    #    self.modo_privado = False
+    #    QMessageBox.information(self, "Modo Privado", "Modo privado desativado.")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
